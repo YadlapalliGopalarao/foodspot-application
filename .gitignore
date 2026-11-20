@@ -1,0 +1,25 @@
+# Environment files and secrets
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.production.example
+!foodspot-frontend/.env.production
+
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Build files
+**/dist/
+
+# Laravel cache and logs
+**/storage/logs/*.log
+**/bootstrap/cache/*.php
+
+# IDE files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db

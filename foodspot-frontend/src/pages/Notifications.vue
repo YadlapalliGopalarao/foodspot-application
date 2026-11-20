@@ -1,0 +1,3 @@
+<script setup>
+import {onMounted} from 'vue';import {useAuth} from '../stores/auth.js';import {useNotifications} from '../stores/notifications.js';import {useTask} from '../composables/useTask.js';const auth=useAuth(),store=useNotifications();const {busy,error,run}=useTask();onMounted(()=>{if(auth.me)run(store.load)})
+</script><template><h2>Notifications</h2><p v-if="error" role="alert">{{error}}</p><p v-if="!auth.me"><RouterLink to="/account">Sign in</RouterLink> to see notifications.</p><template v-else><p v-if="!store.items.length&&!busy">No notifications yet.</p><article v-for="n in store.items" :key="n.id" class="panel">{{n.message}}</article></template></template>
