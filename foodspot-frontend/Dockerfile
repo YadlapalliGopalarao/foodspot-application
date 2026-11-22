@@ -1,5 +1,5 @@
 
-# Stage 1: Build Vue.js application
+# Stage 1: Build Vue.js
 FROM node:24-bookworm-slim AS builder
 
 WORKDIR /app
@@ -12,15 +12,15 @@ COPY . .
 
 RUN npm run build
 
-# Stage 2: Production web server
-FROM nginx:stable-alpine
-
-RUN rm -rf /usr/share/nginx/html/*
+# Stage 2: Serve application using non-root Nginx
+FROM nginx/nginx-unprivileged:stable-alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+USER 101
+
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
