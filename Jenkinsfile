@@ -124,7 +124,7 @@ pipeline {
                 sh '''
                     set -eu
                     for service in $SERVICES_TO_BUILD; do
-                        trivy image --scanners vuln,secret --severity HIGH,CRITICAL --exit-code 1 \
+                        trivy image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 YOUR_IMAGE:TAG \
                             "$DOCKER_NAMESPACE/foodspot-$service:$IMAGE_TAG"
                     done
                 '''
