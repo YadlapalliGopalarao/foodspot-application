@@ -118,18 +118,32 @@ pipeline {
                 '''
             }
         }
-        stage('Trivy image scan') {
-            when { expression { env.SERVICES_TO_BUILD?.trim() } }
-            steps {
-                sh '''
-                    set -eu
-                    for service in $SERVICES_TO_BUILD; do
-                        trivy image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 "$IMAGE_NAME" \
-                            "$DOCKER_NAMESPACE/foodspot-$service:$IMAGE_TAG"
-                    done
-                '''
-            }
-        }
+        
+stage('Trivy image scan') {
+    steps {
+        sh '''
+            set -eu
+
+            IMAGE_TAG="b${BUILD_NUMBER}-$(git rev-parse --short=7 HEAD)"
+
+            for service in $SERVICES_TO_BUILD; do
+                IMAGE_NAME="gopalarao2004/foodspot-${service}:${IMAGE_TAG}"
+
+                echo "Scanning image: ${IMAGE_NAME}"
+
+                docker image inspect "$IMAGE_NAME" > /dev/null
+
+                trivy image \
+                    --scanners vuln \
+                    --severity HIGH,CRITICAL \
+                    --ignore-unfixed \
+                    --exit-code 1 \
+                    "$IMAGE_NAME"
+            done
+        '''
+    }
+}
+
         stage('Docker Hub push') {
             when { expression { env.SERVICES_TO_BUILD?.trim() } }
             steps {
