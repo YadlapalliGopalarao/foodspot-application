@@ -18,11 +18,8 @@ RUN npm run build
 # Stage 2: Non-root Nginx server
 FROM nginx/nginx-unprivileged:stable-alpine
 
-# Remove default static content
-RUN rm -rf /usr/share/nginx/html/*
-
 # Copy compiled Vue.js application
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist/ /usr/share/nginx/html/
 
 # Copy Nginx reverse proxy configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
